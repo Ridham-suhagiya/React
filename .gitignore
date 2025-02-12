@@ -1,2 +1,2 @@
- .parcel-cache
- .node_mododules
+ .parcel-cache/**/*
+ .node_mododules/**/*
