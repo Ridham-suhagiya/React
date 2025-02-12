@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",  // Use ESNext for browser compatibility
+    "moduleResolution": "Node",
+    "jsx": "react",      // Support JSX syntax
+    "strict": true,
+    "outDir": "./dist",  // Output compiled files here
+    "rootDir": "./src",   // Source files located in src
+    "baseUrl": "." 
+  },
+  "include": ["src/**/*"]  // Include all TypeScript/TSX files in src folder and react.tsx
+}

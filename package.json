@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@types/lodash": "^4.17.14",
+    "lodash": "^4.17.21"
+  },
+  "scripts": {
+    "start": "npx parcel index.html",
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.13.3",
+    "lite-server": "^2.6.1",
+    "parcel": "^2.13.3",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3",
+    "undici": "^7.3.0"
+  }
+}
