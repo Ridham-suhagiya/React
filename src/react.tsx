@@ -5,17 +5,18 @@ import { HTML_TAGS } from "./constants";
 const React = () => {
     const h: any = [];
     let idx = 0;
-    let callbacks: any = [];
     const cleanUpFuns: any = {};
     const componentStack: any = [];
     let componentCallbacks: any = {};
     let renderComponentStack: any = [];
     let appComponentId = "main-app-component";
     const componentRenderFuncs: any = {};
+    const componentHasRendered: any = {};
+    const componentIdxCount:any =  {};
 
 
     let getVirtualDom: any;
-    let virtualDom: any
+    let virtualDom: any = {}
 
     const createElement = (tag: HTML_TAGS, props: any, ...children: any) => {
         return {
@@ -33,7 +34,6 @@ const React = () => {
 
     const useState = (initialValue: any): any => {
         const stateIndex = idx;
-        // console.log(stateIndex, "this is the index", h)
         h[stateIndex] = h[stateIndex] ?? initialValue;
         const currentComponentId = _getCurrentComponentId();
         const setState = (value: any) => {
@@ -42,9 +42,11 @@ const React = () => {
             } else {
                 h[stateIndex] = value;
             }
-
-            renderApp(currentComponentId)
-
+            if (!componentHasRendered[currentComponentId] && !renderComponentStack.includes(currentComponentId)) {
+                renderComponentStack.push(currentComponentId);
+            } else if (componentHasRendered[currentComponentId]) {
+                renderApp(currentComponentId);
+            }
         }
         idx += 1;
         return [h[stateIndex], setState];
@@ -81,7 +83,7 @@ const React = () => {
             if (isString(child)) {
                 const node = document.createTextNode(child);
                 ele.appendChild(node);
-            } else {
+            } else if (typeof child !== "function"){
                 render(child, ele);
             }
         })
@@ -94,8 +96,7 @@ const React = () => {
         delete newVdProps.children;
         const oldVdProps = { ...oldVd?.props };
         delete oldVdProps.children;
-
-        if (!oldVd && newVd && root) {
+        if ((isEmpty(oldVd) || !oldVd) && newVd && root) {
             root.appendChild(render(newVd))
         }
         else if (!newVd && oldVd && root) {
@@ -135,43 +136,34 @@ const React = () => {
 
 
     const renderApp = (componentId: string) => {
-        idx = 0;
         const root = document.getElementById("root");
-        let newVd;
-        console.log(virtualDom, "this is th eucrr vd")
-        // if (!virtualDom) {
-        const curr = getVirtualDom()
-        newVd = iterateThroughtTheTreeAndExcuteComponent(curr, appComponentId);
-        // } else {
-        //     const renderFunc = get(componentRenderFuncs, componentId);
-        //     console.log(virtualDom, componentId);
-        //     const renderFuncVd = renderFunc();
-        //     newVd = _stichNewVdIntoOldVd(virtualDom, renderFuncVd, componentId);
-        // }
-        callbacks = [];
+        renderComponentStack = [];
+        idx = componentIdxCount[componentId];
+        let newComponentVd = cloneDeep(virtualDom);
+        console.log(newComponentVd, "this is hitneno", componentId);
+        newComponentVd = iterateThroughtTheTreeAndExcuteComponent(newComponentVd, componentId, componentId);         
         if (root) {
-            _compareAndUpdateDoms(root, newVd, virtualDom);
+            _compareAndUpdateDoms(root, newComponentVd, virtualDom);
         }
-        virtualDom = newVd;
+        virtualDom = newComponentVd;
     }
 
-    const _stichNewVdIntoOldVd = (oldVd: any, newVd: any, currComponentId: string) => {
-        const componentId = get(oldVd, "props.data-component-id")
-        if (!oldVd) {
-            oldVd = newVd
-        }
-        else if (componentId === currComponentId) {
-            console.log(oldVd, newVd);
-            oldVd = newVd
-        } else {
-            const props = get(oldVd, "props", []);
-            const children = get(props, "children");
-            for (let i in children) {
-                _stichNewVdIntoOldVd(children[i], newVd, currComponentId)
-            }
-        }
-        return oldVd
-    }
+    // const _stichNewVdIntoOldVd = (oldVd: any, newVd: any, currComponentId: string) => {
+    //     const componentId = get(oldVd, "props.data-component-id")
+    //     if (!oldVd) {
+    //         oldVd = newVd
+    //     }
+    //     else if (componentId === currComponentId) {
+    //         oldVd = newVd
+    //     } else {
+    //         const props = get(oldVd, "props", []);
+    //         const children = get(props, "children");
+    //         for (let i in children) {
+    //             _stichNewVdIntoOldVd(children[i], newVd, currComponentId)
+    //         }
+    //     }
+    //     return oldVd
+    // }
 
     const _runAllCallbacksForTheComponent = (componentId: string): void => {
         const _runAllCallbacks = (callbacks: (() => any)[], key: string) => {
@@ -181,19 +173,9 @@ const React = () => {
                     cleanUps && (cleanUpFuns[key] ? cleanUpFuns[key].push(cleanUps) : cleanUpFuns[key] = [cleanUps]);
                 }
             })
-            componentStack.pop();
         }
         _runAllCallbacks(componentCallbacks[componentId] ?? [], componentId)
-        _reRenderComponents(componentId)
         componentCallbacks = {}
-    }
-
-    const _reRenderComponents = (componentId: string) => {
-        if (!isEmpty(renderComponentStack)) {
-            renderComponentStack = [];
-            console.log("rendering is here")
-            renderApp(componentId)
-        }
     }
 
     const _runAllCleanUps = (componentId: string) => cleanUpFuns[componentId]?.map((cu: () => void) => cu && cu())
@@ -202,28 +184,44 @@ const React = () => {
     const mount = (vd: any) => {
         getVirtualDom = get(vd, "componentFunc");
         componentStack.push(get(vd, "componentId"));
-        virtualDom = iterateThroughtTheTreeAndExcuteComponent(getVirtualDom(), appComponentId);
+        componentIdxCount[appComponentId] = 0;
+        renderApp(appComponentId);
     }
 
-    const iterateThroughtTheTreeAndExcuteComponent = (currentTree: any, appComponentId: string) => {
+    const iterateThroughtTheTreeAndExcuteComponent = (currentTree: any, currComponentId: string, searchComponentId: string) => {
+        componentHasRendered[currComponentId] = false;
+        if (isEmpty(currentTree) && !isString(currentTree) && currentTree){
+            currentTree = getVirtualDom();
+        }
         const props = get(currentTree, "props", []);
         const children = get(props, "children");
         for (let i in children) {
-            const childComponentId = get(children[i], "componentId");
+            const childComponentId = get(children[i], "componentId", get(children[i], "props.componentId"));
             const componentFunc = get(children[i], "componentFunc");
-            if (componentFunc && childComponentId) {
+            if (componentFunc) {
                 componentStack.push(childComponentId);
                 componentRenderFuncs[childComponentId] = componentFunc;
+                componentIdxCount[childComponentId] = idx;
                 children[i] = componentFunc()
+            } else if ((childComponentId === searchComponentId) && childComponentId) {
+                const renderFunc = componentRenderFuncs[searchComponentId];
+                componentStack.push(searchComponentId);
+                children[i] = renderFunc();
             }
-            iterateThroughtTheTreeAndExcuteComponent(children[i], childComponentId)
+            iterateThroughtTheTreeAndExcuteComponent(children[i], childComponentId, searchComponentId)
         }
-        appComponentId && _runAllCallbacksForTheComponent(appComponentId);
+
+        currComponentId && _runAllCallbacksForTheComponent(currComponentId);
+        // if (renderComponentStack.includes(currComponentId) && currComponentId) renderApp(currComponentId);
+        componentHasRendered[currComponentId] = true;
+        componentStack.pop();
         return currentTree
     }
     return {
         createElement,
+        render,
         useState,
+        renderApp,
         mount,
         useEffect
     }
