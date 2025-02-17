@@ -1,4 +1,4 @@
-import { cloneDeep, find, get, isEmpty, isEqual, isNumber, isString, isUndefined } from "lodash";
+import { cloneDeep, find, get, isEmpty, isEqual, isNumber, isString, isUndefined, toArray } from "lodash";
 import { setAttributes } from "./utilts";
 import { HTML_TAGS } from "./constants";
 
@@ -12,11 +12,11 @@ const React = () => {
     let appComponentId = "main-app-component";
     const componentRenderFuncs: any = {};
     const componentHasRendered: any = {};
-    const componentIdxCount:any =  {};
+    const componentIdxCount: any = {};
 
 
     let getVirtualDom: any;
-    let virtualDom: any = {}
+    let virtualDom: any;
 
     const createElement = (tag: HTML_TAGS, props: any, ...children: any) => {
         return {
@@ -83,7 +83,7 @@ const React = () => {
             if (isString(child)) {
                 const node = document.createTextNode(child);
                 ele.appendChild(node);
-            } else if (typeof child !== "function"){
+            } else if (typeof child !== "function") {
                 render(child, ele);
             }
         })
@@ -96,14 +96,14 @@ const React = () => {
         delete newVdProps.children;
         const oldVdProps = { ...oldVd?.props };
         delete oldVdProps.children;
-        if ((isEmpty(oldVd) || !oldVd) && newVd && root) {
+        if (!oldVd && newVd && root) {
             root.appendChild(render(newVd))
         }
         else if (!newVd && oldVd && root) {
-            if (root.children[index]) {
-                const componentId = get(oldVd, "props.data-component-id");
-                _runAllCleanUps(componentId);
-                root.removeChild(root.children[index]);
+            const toRemove = toArray(root.children).filter((val: any) =>
+                JSON.stringify(render(oldVd)) == JSON.stringify(val))[0];
+            if (toRemove) {
+                root.removeChild(toRemove);
             }
         }
         else if (newVd && oldVd && (((typeof newVd !== typeof oldVd)) || (newVd.tag !== oldVd.tag))) {
@@ -140,7 +140,6 @@ const React = () => {
         renderComponentStack = [];
         idx = componentIdxCount[componentId];
         let newComponentVd = cloneDeep(virtualDom);
-        console.log(newComponentVd, "this is hitneno", componentId);
         newComponentVd = iterateThroughtTheTreeAndExcuteComponent(newComponentVd, componentId, componentId);         
         if (root) {
             _compareAndUpdateDoms(root, newComponentVd, virtualDom);
@@ -190,7 +189,7 @@ const React = () => {
 
     const iterateThroughtTheTreeAndExcuteComponent = (currentTree: any, currComponentId: string, searchComponentId: string) => {
         componentHasRendered[currComponentId] = false;
-        if (isEmpty(currentTree) && !isString(currentTree) && currentTree){
+        if (isEmpty(currentTree) && !isString(currentTree) && currentTree) {
             currentTree = getVirtualDom();
         }
         const props = get(currentTree, "props", []);
