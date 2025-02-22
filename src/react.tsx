@@ -30,7 +30,7 @@ const React = () => {
     }
 
     const createComponent = ({componentFunc, componentId, props = {}}: CreateComponentType) => {
-        componentRenderFuncs[componentId] = {renderFunc: componentFunc, props};
+        componentRenderFuncs[componentId] = {componentFunc, props, componentId};
         return set(componentFunc(props), "props.componentId", componentId);
     }
     
@@ -52,9 +52,7 @@ const React = () => {
             if (!componentHasRendered[currentComponentId] && !renderComponentStack.includes(currentComponentId)) {
                 renderComponentStack.push(currentComponentId);
             } else if (componentHasRendered[currentComponentId]) {
-                setTimeout(() => {
-                    renderApp(currentComponentId);
-                }, 800);
+                renderApp(currentComponentId);
             }
         }
         idx += 1;
@@ -65,7 +63,6 @@ const React = () => {
         const hookIdx = idx;
         const componentId = _getCurrentComponentId();
         const oldListoDependencies = h[hookIdx];
-        componentId === "async-component" && console.log(h[hookIdx], oldListoDependencies,"these are the variables", isUndefined(h[hookIdx]) || (oldListoDependencies && listOfDependencis.some((d: any, i: number) => !isEqual(d, oldListoDependencies[i]))))
         if (isUndefined(h[hookIdx]) || (oldListoDependencies && listOfDependencis.some((d: any, i: number) => !isEqual(d, oldListoDependencies[i])))) {
             h[hookIdx] = listOfDependencis;
             if (componentId) {
@@ -110,8 +107,7 @@ const React = () => {
             root.appendChild(render(newVd))
         }
         else if (!newVd && oldVd && root) {
-            const toRemove = toArray(root.children).filter((val: any) =>
-                JSON.stringify(render(oldVd)) == JSON.stringify(val))[0];
+            let toRemove = toArray(root.children).find((child: any) => child.isEqualNode(render(oldVd)));
             if (toRemove) {
                 root.removeChild(toRemove);
             }
@@ -121,24 +117,19 @@ const React = () => {
         }
         else if ((isString(newVd) || isNumber(newVd)) && (newVd !== oldVd)) {
             root.innerHTML = `${newVd}`;
-        } else if (!isEqual(oldVdProps, newVdProps)) {
-            if (root) {
-                setAttributes(root.children[index] as HTMLElement, newVdProps);
-            }
-        } else {
+        } 
+        else {
             const currentElement = root.children[index] as HTMLElement;
             if (!currentElement) return;
 
+            if (!isEqual(oldVdProps, newVdProps)) setAttributes(currentElement as HTMLElement, newVdProps);
             const lenghtOfNewChildren = get(newVd, "props.children", []).length;
             const lenghtOOldfChildren = get(oldVd, "props.children", []).length;
             const lenghtOfChildren = lenghtOfNewChildren > lenghtOOldfChildren ? lenghtOfNewChildren : lenghtOOldfChildren;
-
             for (let i = 0; i < lenghtOfChildren; i++) {
                 const newVdChild = newVd.props.children[i];
                 const oldVdChild = oldVd.props.children[i];
-                if (typeof root === "object") {
-                    _compareAndUpdateDoms(currentElement, newVdChild, oldVdChild, i)
-                }
+                _compareAndUpdateDoms(currentElement, newVdChild, oldVdChild, i)
             }
         }
 
@@ -157,27 +148,10 @@ const React = () => {
         virtualDom = newComponentVd;
     }
 
-    // const _stichNewVdIntoOldVd = (oldVd: any, newVd: any, currComponentId: string) => {
-    //     const componentId = get(oldVd, "props.data-component-id")
-    //     if (!oldVd) {
-    //         oldVd = newVd
-    //     }
-    //     else if (componentId === currComponentId) {
-    //         oldVd = newVd
-    //     } else {
-    //         const props = get(oldVd, "props", []);
-    //         const children = get(props, "children");
-    //         for (let i in children) {
-    //             _stichNewVdIntoOldVd(children[i], newVd, currComponentId)
-    //         }
-    //     }
-    //     return oldVd
-    // }
 
     const _runAllCallbacksForTheComponent = (componentId: string): void => {
         const _runAllCallbacks = (callbacks: (() => any)[], key: string) => {
             callbacks.map((cb: () => any) => {
-                componentId === "async-component"&& console.log(componentId, componentCallbacks)
                 if (cb) {
                     const cleanUps = cb();
                     cleanUps && (cleanUpFuns[key] ? cleanUpFuns[key].push(cleanUps) : cleanUpFuns[key] = [cleanUps]);
@@ -210,14 +184,11 @@ const React = () => {
             const componentFunc = get(children[i], "componentFunc");
             if (componentFunc) {
                 componentStack.push(childComponentId);
-                // componentRenderFuncs[childComponentId] = componentFunc;
                 componentIdxCount[childComponentId] = idx;
-                // children[i] = componentFunc()
                 children[i] = createComponent(children[i]);
             } else if ((childComponentId === searchComponentId) && childComponentId) {
-                const {renderFunc, props} = componentRenderFuncs[searchComponentId];
                 componentStack.push(searchComponentId);
-                children[i] = renderFunc(props);
+                children[i] = createComponent(componentRenderFuncs[searchComponentId]);
             }
             iterateThroughtTheTreeAndExcuteComponent(children[i], childComponentId, searchComponentId)
         }
