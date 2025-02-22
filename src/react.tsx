@@ -1,6 +1,7 @@
-import { cloneDeep, find, get, isEmpty, isEqual, isNumber, isString, isUndefined, toArray } from "lodash";
+import { cloneDeep, find, get, isEmpty, isEqual, isNumber, isString, isUndefined, set, toArray } from "lodash";
 import { setAttributes } from "./utilts";
 import { HTML_TAGS } from "./constants";
+import { CreateComponentType } from "./type";
 
 const React = () => {
     const h: any = [];
@@ -28,11 +29,17 @@ const React = () => {
         };
     }
 
+    const createComponent = ({componentFunc, componentId, props = {}}: CreateComponentType) => {
+        componentRenderFuncs[componentId] = {renderFunc: componentFunc, props};
+        return set(componentFunc(props), "props.componentId", componentId);
+    }
+    
+
     const _getCurrentComponentId = () => {
         return componentStack[componentStack.length - 1];
     }
 
-    const useState = (initialValue: any): any => {
+    const useState = <T,>(initialValue: T): [state: T, setState: (state: T | ((prev: T) => T)) => void] => {
         const stateIndex = idx;
         h[stateIndex] = h[stateIndex] ?? initialValue;
         const currentComponentId = _getCurrentComponentId();
@@ -45,7 +52,9 @@ const React = () => {
             if (!componentHasRendered[currentComponentId] && !renderComponentStack.includes(currentComponentId)) {
                 renderComponentStack.push(currentComponentId);
             } else if (componentHasRendered[currentComponentId]) {
-                renderApp(currentComponentId);
+                setTimeout(() => {
+                    renderApp(currentComponentId);
+                }, 800);
             }
         }
         idx += 1;
@@ -56,6 +65,7 @@ const React = () => {
         const hookIdx = idx;
         const componentId = _getCurrentComponentId();
         const oldListoDependencies = h[hookIdx];
+        componentId === "async-component" && console.log(h[hookIdx], oldListoDependencies,"these are the variables", isUndefined(h[hookIdx]) || (oldListoDependencies && listOfDependencis.some((d: any, i: number) => !isEqual(d, oldListoDependencies[i]))))
         if (isUndefined(h[hookIdx]) || (oldListoDependencies && listOfDependencis.some((d: any, i: number) => !isEqual(d, oldListoDependencies[i])))) {
             h[hookIdx] = listOfDependencis;
             if (componentId) {
@@ -167,6 +177,7 @@ const React = () => {
     const _runAllCallbacksForTheComponent = (componentId: string): void => {
         const _runAllCallbacks = (callbacks: (() => any)[], key: string) => {
             callbacks.map((cb: () => any) => {
+                componentId === "async-component"&& console.log(componentId, componentCallbacks)
                 if (cb) {
                     const cleanUps = cb();
                     cleanUps && (cleanUpFuns[key] ? cleanUpFuns[key].push(cleanUps) : cleanUpFuns[key] = [cleanUps]);
@@ -174,7 +185,7 @@ const React = () => {
             })
         }
         _runAllCallbacks(componentCallbacks[componentId] ?? [], componentId)
-        componentCallbacks = {}
+        componentCallbacks[componentId] = []
     }
 
     const _runAllCleanUps = (componentId: string) => cleanUpFuns[componentId]?.map((cu: () => void) => cu && cu())
@@ -189,7 +200,7 @@ const React = () => {
 
     const iterateThroughtTheTreeAndExcuteComponent = (currentTree: any, currComponentId: string, searchComponentId: string) => {
         componentHasRendered[currComponentId] = false;
-        if (isEmpty(currentTree) && !isString(currentTree) && currentTree) {
+        if (isEmpty(currentTree) && !isString(currentTree) && isUndefined(currentTree)) {
             currentTree = getVirtualDom();
         }
         const props = get(currentTree, "props", []);
@@ -199,19 +210,18 @@ const React = () => {
             const componentFunc = get(children[i], "componentFunc");
             if (componentFunc) {
                 componentStack.push(childComponentId);
-                componentRenderFuncs[childComponentId] = componentFunc;
+                // componentRenderFuncs[childComponentId] = componentFunc;
                 componentIdxCount[childComponentId] = idx;
-                children[i] = componentFunc()
+                // children[i] = componentFunc()
+                children[i] = createComponent(children[i]);
             } else if ((childComponentId === searchComponentId) && childComponentId) {
-                const renderFunc = componentRenderFuncs[searchComponentId];
+                const {renderFunc, props} = componentRenderFuncs[searchComponentId];
                 componentStack.push(searchComponentId);
-                children[i] = renderFunc();
+                children[i] = renderFunc(props);
             }
             iterateThroughtTheTreeAndExcuteComponent(children[i], childComponentId, searchComponentId)
         }
-
         currComponentId && _runAllCallbacksForTheComponent(currComponentId);
-        // if (renderComponentStack.includes(currComponentId) && currComponentId) renderApp(currComponentId);
         componentHasRendered[currComponentId] = true;
         componentStack.pop();
         return currentTree
