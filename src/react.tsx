@@ -1,4 +1,4 @@
-import { cloneDeep, find, get, isEmpty, isEqual, isNumber, isString, isUndefined, set, toArray } from "lodash";
+import { cloneDeep, find, get, isArray, isEmpty, isEqual, isNumber, isString, isUndefined, set, toArray } from "lodash";
 import { setAttributes } from "./utilts";
 import { HTML_TAGS } from "./constants";
 import { CreateComponentType } from "./type";

@@ -1,158 +1,159 @@
 import React from "./react";
+import earth from "./images/earth.png";
+import redStar from "./images/red-star.png";
+import blueStar from "./images/blue-star.png";
+import Helmet from "./images/helmet.png";
 
-export const APP = () => {
-    const { createElement, useState, mount, useEffect } = React();
+export const PortfolioApp = () => {
+    const { createElement, useState, useEffect, mount } = React();
+    //constants
+    const sections = ["About", "Experience", "Projects", "Skills", "Contact"];
+    const imageArr = [earth, earth, earth, earth, earth, earth];
 
-    // Test 1: Basic useEffect with Cleanup
-    const Timer = () => {
-        const [time, setTime] = useState(new Date().toLocaleTimeString());
-        const [isRunning, setIsRunning] = useState(true);
-        const [intervalTimerId, setIntervalTimerId] = useState("");
-        useEffect(() => {
-            let interval: any;
-            if (isRunning) {
-                interval = setInterval(() => {
-                    setTime(new Date().toLocaleTimeString());
-                }, 1000);
-                if (intervalTimerId) {
-                    setIntervalTimerId(interval)
-                }
+
+    // components 
+
+    const RedBlueStars = ({ numberOfStars, starImage }: any) =>
+        createElement("img", { style: { position: "absolute", left: `${100 * Math.random()}%`, top: `${100 * Math.random()}%`, height: "34px" }, src: starImage });
+
+
+    const SectionWithImage = ({ sectionComponent, imageSrc, index, imageStyles, addRandomStars }: any) => {
+
+        const isEven = index % 2 === 0;
+
+        const numberOfStars = 10 * Math.random()
+
+        return createElement("div", {
+            style: {
+                display: "flex",
+                flexDirection: isEven ? "row" : "row-reverse", // Alternate sides
+                alignItems: "center",
+                gap: "40px", // Space between content and image
+                marginBottom: "60px", // Increased margin between sections
+                position: "relative"
             }
-
-            // Cleanup function
-            return () => {
-                if (interval) {
-                    console.log('Cleaning up timer');
-                    clearInterval(interval);
-                }
-            };
-        }, [isRunning]);
-
-        return createElement("div", { className: "test-component", componentId: "timer-component" },
-            createElement("h2", null, "Test 1: useEffect with Cleanup"),
-            createElement("p", null, `Current time: ${time}`),
-            createElement("button", {
-                onClick: () => {
-                    console.log("something something")
-                    clearInterval(intervalTimerId);
-                    setIntervalTimerId()
-                },
-                className: "button"
-            }, isRunning ? "Stop Timer" : "Start Timer"),
-            createElement("p", { className: "effect-note" }, "Check console for effect logs")
-        );
-    }
-
-    // Test 2: Multiple Effects with Different Dependencies
-    const Counter = () => {
-        const [count, setCount] = useState(0);
-        const [isEven, setIsEven] = useState(true);
-        const [countHistory, setCountHistory] = useState<number[]>([]);
-        // Effect 1: Check if count is even
-        console.log(countHistory ,"oondscndv")
-        useEffect(() => {
-            setIsEven(count % 2 === 0);
-        }, [count]);
-
-        // Effect 2: Update history
-        useEffect(() => {
-            setCountHistory((prev: any) => [...prev, count].slice(-5));
-        }, [count]);
-
-        // Effect 3: Log when component mounts
-        useEffect(() => {
-            return () => console.log('Counter component will unmount');
-        }, []);
-        return createElement("div", { className: "test-component", componentId: "counter-component" },
-            createElement("h2", null, "Test 2: Multiple Effects"),
-            createElement("p", null, `Count: ${count} (${isEven ? 'Even' : 'Odd'})`),
-            createElement("p", null, `History: ${countHistory.join(', ')}`),
-            createElement("button", {
-                onClick: () => setCount((c: any) => c + 1),
-                className: "button"
-            }, "Increment"),
-            createElement("p", { className: "effect-note" }, "Check console for effect logs")
-        );
-    }
-
-    // Test 3: Effect with Async Operation and Cleanup
-    const AsyncEffect = () => {
-        const [searchTerm, setSearchTerm] = useState('');
-        const [results, setResults] = useState<string[]>([]);
-        const [status, setStatus] = useState('idle');
-        useEffect(() => {
-            // Skip empty searches
-            if (!searchTerm.trim()) {
-                console.log()
-                setResults([]);
-                return;
+        },
+            sectionComponent(),
+            createElement("img", {
+                src: imageSrc,
+                style: imageStyles
+            }),
+            ...(addRandomStars ? Array.from({ length: numberOfStars }).map((_, i: number) => {
+                const star = i % 2 === 0 ? redStar : blueStar;
+                console.log(isEven, star)
+                return { componentFunc: RedBlueStars, props: { key: i, numberOfStars: 1, starImage: star }, componentId: "red-blue-stars" }
             }
-
-            let isActive = true;
-            setStatus('searching');
-
-            // Simulate async search
-            const timeoutId = setTimeout(() => {
-                if (isActive) {
-                    // Simulate search results
-                    const mockResults = [
-                        `${searchTerm} result 1`,
-                        `${searchTerm} result 2`,
-                        `${searchTerm} result 3`
-                    ];
-                    setResults(mockResults);
-                    setStatus('done');
-                }
-            }, 500);
-
-            // Cleanup function
-            return () => {
-                console.log(`Canceling search for: ${searchTerm}`);
-                isActive = false;
-                clearTimeout(timeoutId);
-            };
-        }, [searchTerm]);
-        return createElement("div", { className: "test-component", componentId: "async-component" },
-            createElement("h2", null, "Test 3: Async Effect with Cleanup"),
-            createElement("input", {
-                type: "text",
-                value: searchTerm,
-                onChange: (e: any) => setSearchTerm(e.target.value),
-                placeholder: "Type to search..."
-            }, null),
-            createElement("p", { className: "status" }, `Status: ${status}`),
-            createElement("ul", { className: "results-list" },
-                ...results.map((result: any) =>
-                    createElement("li", null, result)
+            ): [])
+        );
+    };
+    const Header = () => createElement("header", { id: "header", className: "header slider-item" },
+        createElement("div", { className: "header-content" },
+            createElement("h1", null, "Ridham Suhagiya"),
+            createElement("p", null, "Software Development Engineer | Full-Stack Developer")
+        )
+    )
+    const components: any = {
+        About: () => createElement("section", { id: "about", className: "about slider-item" },
+            createElement("div", { className: "content" },
+                createElement("h2", null, "About Me"),
+                createElement("p", null, "Experienced software engineer skilled in Python, JavaScript, and modern web technologies.")
+            )
+        ),
+        Experience: () => createElement("section", { id: "experience", className: "experience slider-item" },
+            createElement("div", { className: "content" },
+                createElement("h2", null, "Experience"),
+                createElement("ul", null,
+                    createElement("li", null, "Software Development Engineer at IDfy Identity Verification (June 2023 - Present)"),
+                    createElement("li", null, "Software Development Engineer Intern at IDfy Identity Verification (Nov 2022 - Apr 2023)"),
+                    createElement("li", null, "Backend Developer Intern at Anand Rathi Wealth Ltd (July 2022 - Oct 2022)")
                 )
+            )
+        ),
+        Projects: () => createElement("section", { id: "projects", className: "projects slider-item" },
+            createElement("div", { className: "content" },
+                createElement("h2", null, "Projects"),
+                createElement("ul", null,
+                    createElement("li", null, "Online Examination Monitoring - Python, FastAPI, ReactJS, Docker, PostgreSQL"),
+                    createElement("li", null, "Online PDF-Maker - Python, HTML, CSS, Flask")
+                )
+            )
+        ),
+        Skills: () => createElement("section", { id: "skills", className: "skills slider-item" },
+            createElement("div", { className: "content" },
+                createElement("h2", null, "Skills"),
+                createElement("ul", null,
+                    createElement("li", null, "Programming Languages: Python, JavaScript, Java"),
+                    createElement("li", null, "Web Technologies: ReactJS, FastAPI, Flask"),
+                    createElement("li", null, "Database Management: PostgreSQL, MySQL"),
+                    createElement("li", null, "Tools: Docker, AWS, Git"),
+                    createElement("li", null, "Soft Skills: Team Collaboration, Problem Solving, Communication")
+                )
+            )
+        ),
+        Contact: () => createElement("section", { id: "contact", className: "contact slider-item" },
+            createElement("div", { className: "content" },
+                createElement("h2", null, "Contact"),
+                createElement("p", null, "Email: ridhamsuhagiya@gmail.com"),
+                createElement("p", null, "GitHub: github.com/Ridham-suhagiya"),
+                createElement("p", null, "LinkedIn: linkedin.com/in/ridham-suhagiya"),
+                createElement("p", null, "HackerRank: hackerrank.com/Ridhamsuhagiya"),
+                createElement("p", null, "LeetCode: leetcode.com/Ridham_20"),
+                createElement("p", null, "YouTube: youtube.com/channel/UCtBifHWSUEomf4-FHIBDA1A")
+            )
+        )
+    };
+
+
+    const Slider = () => {
+        const [currentIndex, setCurrentIndex] = useState(0);
+
+        const scrollToSection = (id: string) => {
+            const section = document.getElementById(id);
+            if (section) {
+                section.scrollIntoView({ behavior: "smooth" });
+            }
+        };
+
+        return createElement("div", { className: "slider-container" },
+            createElement("div", { className: "slider-chips" },
+                ...sections.map((section, index) =>
+                    createElement("div", {
+                        className: `slider-chip ${index === currentIndex ? "active" : ""}`,
+                        onClick: () => {
+                            setCurrentIndex(index);
+                            scrollToSection(section.toLowerCase());
+                        }
+                    }, section)
+                ),
             ),
-            createElement("p", { className: "effect-note" },
-                "Type quickly to see cleanup in action (check console)")
-        );
-    }
-
-
-    // Main App Component
-    const AppComponent = () => {
-        const [showTests, setShowTests] = useState(true);
-        return createElement("div", { className: "app", componentId: "main-app-component" },
-            createElement("h1", null, "useEffect Test Cases"),
-            createElement("p", { className: "test-guide" },
-                "Open the browser console to see effect lifecycles in action"),
-            createElement("button", {
-                onClick: () => setShowTests((prev: any) => !prev),
-                className: "toggle-button"
-            }, showTests ? "Hide All Tests" : "Show All Tests"),
-            showTests && createElement("div", { className: "test-cases" },
-                { componentFunc: Timer, componentId: "timer-component" },
-                { componentFunc: Counter, componentId: "counter-component" },
-                { componentFunc: AsyncEffect, componentId: "async-component" },
-
+            createElement("div", { className: "portfolio" },
+                createElement("div", { style: { display: "flex", alignItems: "center" } }, { componentFunc: Header, componentId: "header-component" }, createElement("img", { src: Helmet, height: "300rem" })),
+                ...sections.map((section, index: number) =>
+                    createElement("div", null, {
+                        componentFunc: SectionWithImage, props: {
+                            sectionComponent: components[section],
+                            imageSrc: imageArr[index],
+                            index: index,
+                            key: section, // Ensure each section has a unique key
+                            imageStyles: {
+                                width: "300px", // Adjust image size
+                                height: "auto",
+                                borderRadius: "10px", // Rounded corners
+                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)" // Subtle shadow
+                            },
+                            addRandomStars: false
+                        }, componentId: "section-with-image"
+                    })
+                )
             )
         );
-    }
+    };
 
-    mount({ componentFunc: AppComponent, componentId: "main-app-component" });
+    const APP = () => {
+        return createElement("div", null, { componentFunc: Slider, componentId: "slider-component" });
+    };
+
+    mount({ componentFunc: APP, componentId: "main-app-component" });
 };
 
-APP();
+PortfolioApp();
