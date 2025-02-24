@@ -102,6 +102,7 @@ section {
   color: #e0d7ff;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 section.animate-fade-in {
@@ -128,7 +129,7 @@ section .content {
 .slider-chips {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 20px; /* Default gap for desktop */
   margin-bottom: 20px;
 }
 
@@ -138,6 +139,9 @@ section .content {
   border-radius: 20px;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease;
+  color: #e0d7ff;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .slider-chip:hover {
@@ -150,6 +154,18 @@ section .content {
   color: #fff;
 }
 
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .slider-chips {
+      flex-direction: column;
+      gap: 10px; /* Reduced gap for mobile */
+  }
+
+  .slider-chip {
+      width: 100%;
+      font-size: 1rem;
+  }
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   h1 {
@@ -172,12 +188,54 @@ section .content {
     padding: 8px 16px;
   }
 
+  /* Make all flex containers column on mobile */
+  header, section, .slider-container, .portfolio, .slider-chips {
+    flex-direction: column;
+  }
+
   section {
-    flex-direction: column; /* Stack content and images vertically on small screens */
     padding: 20px;
   }
 
   section .content {
     padding: 0;
   }
+
+  /* Adjust header layout for mobile */
+  header {
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 3rem;
+  }
+
+  header p {
+    font-size: 1.5rem;
+  }
+
+  /* Adjust image size for mobile */
+  img {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+  }
+}
+
+@keyframes wave {
+  0% { background-position-x: 0; }
+  100% { background-position-x: 8px; }
+}
+
+.underline-wave {
+  animation: wave 0.5s linear infinite;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDIiIHdpZHRoPSI4IiBoZWlnaHQ9IjIiPjxwYXRoIGQ9Ik0wIDBoOHYySDB6IiBmaWxsPSJvcmFuZ2UiIC8+PHBhdGggZD0iTTAgMWg4djFIMHoiIGZpbGw9Im9yYW5nZSIgLz48L3N2Zz4=');
+  background-repeat: repeat-x;
+  background-size: 8px 10px;
+  height: 10px;
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
 }

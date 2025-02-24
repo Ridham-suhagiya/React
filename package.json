@@ -5,7 +5,7 @@
   },
   "scripts": {
     "start": "npx parcel index.html",
-    "build": "tsc -p tsconfig.json"
+    "build": "npx parcel build index.html"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.13.3",
