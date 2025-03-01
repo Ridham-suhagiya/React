@@ -78,19 +78,21 @@ const Layout = () => {
                     marginBottom: "20px",
                 },
             },
-            ...sections.map((section, index) =>
-                createElement(
-                    "div",
-                    {
-                        className: `nav-link ${index === currentIndex ? "active" : ""}`,
-                        onClick: () => {
-                            setCurrentIndex(index);
-                            scrollToSection(section.toLowerCase());
-                        },
-                    },
-                    section,
-                ),
-            ),
+            !isMobileView
+                ? sections.map((section, index) =>
+                      createElement(
+                          "div",
+                          {
+                              className: `nav-link ${index === currentIndex ? "active" : ""}`,
+                              onClick: () => {
+                                  setCurrentIndex(index);
+                                  scrollToSection(section.toLowerCase());
+                              },
+                          },
+                          section,
+                      ),
+                  )
+                : "",
         ),
         createElement(
             "div",
