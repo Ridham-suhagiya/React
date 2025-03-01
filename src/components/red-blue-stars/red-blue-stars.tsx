@@ -1,0 +1,17 @@
+import React from "src/react";
+
+const RedBlueStars = ({ numberOfStars, starImage }: any) => {
+    const { createElement } = React;
+    return createElement("img", {
+        style: {
+            position: "absolute",
+            zIndex: -1,
+            left: `${100 * Math.random()}%`,
+            top: `${100 * Math.random()}%`,
+            width: "44px",
+        },
+        src: starImage,
+    });
+};
+
+export default RedBlueStars;
