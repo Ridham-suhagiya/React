@@ -8,7 +8,7 @@ import mySql from "../../images/svg/mysql.svg";
 import redis from "../../images/svg/redis.svg";
 import flask from "../../images/svg/flask.svg";
 
-import "./skills.module.scss";
+import "./skills.css";
 
 const Skills = () => {
     const { createElement } = React;

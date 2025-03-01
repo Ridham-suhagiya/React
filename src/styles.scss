@@ -33,57 +33,7 @@ h2 {
 }
 
 
-// Skills
 
-.skills-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: inherit;
-    gap: 15px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-}
-
-.skill-chip {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: float 3s ease-in-out infinite;
-    cursor: pointer;
-    position: relative;
-}
-
-.skill-chip.no-float {
-    animation: none; /* Disable float animation during cursor interaction */
-}
-
-.skill-chip img {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-.skill-chip span {
-    font-size: 0.9rem;
-    color: #e0d7ff;
-}
-
-/* Floating animation */
-@keyframes float {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
 p,
 li {
     font-size: 1.1rem;
