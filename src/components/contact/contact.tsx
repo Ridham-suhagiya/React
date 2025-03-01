@@ -6,6 +6,7 @@ import hackerrank from "../../images/svg/hackerrank.svg";
 import github from "../../images/svg/hackerrank.svg";
 import linkedIn from "../../images/svg/leetcode.svg";
 import youtube from "../../images/svg/youtube.svg";
+import "./contact.css";
 
 const Contact = () => {
     const { createElement } = React;

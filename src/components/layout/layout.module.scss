@@ -32,6 +32,7 @@ h2 {
     margin-top: 40px;
 }
 
+// Experience
 
 // Skills
 
@@ -40,10 +41,11 @@ h2 {
     flex-wrap: wrap;
     justify-content: center;
     width: inherit;
+    height: inherit;
     gap: 15px;
-    padding: 20px;
+    z-index: 100;
+    // padding: 20px;
     position: relative;
-    overflow: hidden;
 }
 
 .skill-chip {
@@ -84,6 +86,9 @@ h2 {
         transform: translateY(-10px);
     }
 }
+
+// contact
+
 p,
 li {
     font-size: 1.1rem;
@@ -189,11 +194,7 @@ section .content p {
     margin-bottom: 15px;
 }
 
-section .content .fun-fact {
-    font-style: italic;
-    color: #9b5de5; /* Highlight color for fun fact */
-    margin-top: 20px;
-}
+section .content 
 
 /* Add some hover effects for interactivity */
 section:hover {

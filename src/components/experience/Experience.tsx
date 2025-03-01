@@ -1,5 +1,5 @@
 import React from "src/react";
-import "./experience.module.scss";
+import "./experience.css";
 import { isArray } from "lodash";
 
 const Experience = () => {
@@ -7,6 +7,7 @@ const Experience = () => {
     const ShowExperience = (props: any) => {
         const { children } = props;
         const [toggleExperience, setToggleExperience] = useState(false);
+        console.log(toggleExperience);
         return createElement(
             "div",
             { className: "experience-container" },
