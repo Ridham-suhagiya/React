@@ -10,7 +10,9 @@
         "baseUrl": ".",
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": false,
+        "noEmit": true,
+        "allowImportingTsExtensions": true
     },
     "include": ["src/**/*"] // Include all TypeScript/TSX files in src folder and react.tsx
 }

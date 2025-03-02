@@ -1,5 +1,5 @@
 import { cloneDeep, get, isEmpty, isEqual, isNumber, isString, isUndefined, set, toArray } from "lodash";
-import { setAttributes } from "./utils";
+import { setAttributes } from "./utils.ts";
 import { HTML_TAGS } from "./constants";
 import { CreateComponentType } from "./type";
 

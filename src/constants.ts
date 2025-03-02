@@ -1,9 +1,3 @@
-
-import lemon from "./images/lemon.png";
-import Building from "./images/building.png";
-import Mick from "./images/mick.png";
-import earth from "./images/earth.png";
-
 export type HTML_TAGS =
     | "html"
     | "head"
@@ -90,6 +84,3 @@ export type HTML_TAGS =
 export const Children_Type = {
     string: "",
 };
-
-export const sections = ["About", "Experience", "Projects", "Skills", "Contact"];
-export const imageArr = [earth, Building, lemon, Mick, earth, earth];
