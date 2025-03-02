@@ -3,8 +3,8 @@ import React from "src/react";
 import gmail from "../../images/svg/gmail.svg";
 import leetCode from "../../images/svg/leetcode.svg";
 import hackerrank from "../../images/svg/hackerrank.svg";
-import github from "../../images/svg/hackerrank.svg";
-import linkedIn from "../../images/svg/leetcode.svg";
+import github from "../../images/svg/github.svg";
+import linkedIn from "../../images/svg/linkedIn.svg";
 import youtube from "../../images/svg/youtube.svg";
 import "./contact.css";
 
@@ -20,6 +20,12 @@ const Contact = () => {
             createElement(
                 "div",
                 { className: "contact-links" },
+                createElement(
+                    "a",
+                    { href: "https://youtube.com/channel/UCtBifHWSUEomf4-FHIBDA1A", className: "contact-link" },
+                    createElement("img", { src: youtube, alt: "YouTube" }),
+                    createElement("span", null, "YouTube"),
+                ),
                 createElement(
                     "a",
                     { href: "mailto:ridhamsuhagiya@gmail.com", className: "contact-link" },
@@ -49,12 +55,6 @@ const Contact = () => {
                     { href: "https://leetcode.com/Ridham_20", className: "contact-link" },
                     createElement("img", { src: leetCode, alt: "LeetCode" }),
                     createElement("span", null, "LeetCode"),
-                ),
-                createElement(
-                    "a",
-                    { href: "https://youtube.com/channel/UCtBifHWSUEomf4-FHIBDA1A", className: "contact-link" },
-                    createElement("img", { src: youtube, alt: "YouTube" }),
-                    createElement("span", null, "YouTube"),
                 ),
             ),
         ),
