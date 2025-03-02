@@ -8,6 +8,7 @@ import Projects from "../projects/projects";
 import SectionWithImage from "../section/section";
 import Skills from "../skills/skills";
 import Helmet from "../../images/helmet.png";
+import "./layout.css";
 
 function getCurrentScreenDimensions(): any {
     return {
@@ -78,19 +79,21 @@ const Layout = () => {
                     marginBottom: "20px",
                 },
             },
-            ...sections.map((section, index) =>
-                createElement(
-                    "div",
-                    {
-                        className: `nav-link ${index === currentIndex ? "active" : ""}`,
-                        onClick: () => {
-                            setCurrentIndex(index);
-                            scrollToSection(section.toLowerCase());
-                        },
-                    },
-                    section,
-                ),
-            ),
+            ...(!isMobileView
+                ? sections.map((section, index) =>
+                      createElement(
+                          "div",
+                          {
+                              className: `nav-link ${index === currentIndex ? "active" : ""}`,
+                              onClick: () => {
+                                  setCurrentIndex(index);
+                                  scrollToSection(section.toLowerCase());
+                              },
+                          },
+                          section,
+                      ),
+                  )
+                : []),
         ),
         createElement(
             "div",
@@ -108,8 +111,8 @@ const Layout = () => {
                 { componentFunc: Header, componentId: "header-component" },
                 createElement("img", { src: Helmet, height: "300rem" }),
             ),
-            ...sections.map((section, index: number) =>
-                createElement("div", null, {
+            ...sections.map((section, index: number) => {
+                return {
                     componentFunc: SectionWithImage,
                     props: {
                         sectionComponent: components[section],
@@ -128,8 +131,8 @@ const Layout = () => {
                         addRandomStars: true,
                     },
                     componentId: "section-with-image",
-                }),
-            ),
+                };
+            }),
         ),
     );
 };
