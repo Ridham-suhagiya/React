@@ -1,5 +1,5 @@
 import { sections, imageArr } from "src/constants";
-import React from "src/react";
+import { createElement, useEffect, useState } from "src/react";
 import About from "../about/About";
 import Contact from "../contact/contact";
 import Experience from "../experience/Experience";
@@ -26,7 +26,6 @@ const components: any = {
 };
 
 const Layout = () => {
-    const { useState, useEffect, createElement } = React;
     const [screenSize, setScreenSize] = useState<any>(getCurrentScreenDimensions());
     const [currentIndex, setCurrentIndex] = useState(0);
     const checkIfMobile = () => {

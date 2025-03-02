@@ -1,4 +1,4 @@
-import React from "src/react";
+import { createElement } from "src/react";
 
 import gmail from "../../images/svg/gmail.svg";
 import leetCode from "../../images/svg/leetcode.svg";
@@ -9,7 +9,6 @@ import youtube from "../../images/svg/youtube.svg";
 import "./contact.css";
 
 const Contact = () => {
-    const { createElement } = React;
     return createElement(
         "section",
         { id: "contact", className: "contact slider-item" },

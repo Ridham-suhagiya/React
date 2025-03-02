@@ -1,7 +1,6 @@
-import React from "src/react";
+import { createElement } from "src/react";
 
 const RedBlueStars = ({ numberOfStars, starImage }: any) => {
-    const { createElement } = React;
     return createElement("img", {
         style: {
             position: "absolute",

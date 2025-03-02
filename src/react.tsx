@@ -1,5 +1,5 @@
-import { cloneDeep, find, get, isArray, isEmpty, isEqual, isNumber, isString, isUndefined, set, toArray } from "lodash";
-import { setAttributes } from "./utilts";
+import { cloneDeep, get, isEmpty, isEqual, isNumber, isString, isUndefined, set, toArray } from "lodash";
+import { setAttributes } from "./utils";
 import { HTML_TAGS } from "./constants";
 import { CreateComponentType } from "./type";
 
@@ -212,4 +212,9 @@ const React = (() => {
     };
 })();
 
-export default React;
+export const createElement = React.createElement;
+export const render = React.render;
+export const useState = React.useState;
+export const renderApp = React.renderApp;
+export const mount = React.mount;
+export const useEffect = React.useEffect;

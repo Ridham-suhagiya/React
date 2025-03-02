@@ -1,4 +1,4 @@
-import React from "src/react";
+import { createElement } from "src/react";
 import python from "../../images/svg/python.svg";
 import react from "../../images/svg/react.svg";
 import js from "../../images/svg/javascript.svg";
@@ -11,7 +11,6 @@ import flask from "../../images/svg/flask.svg";
 import "./skills.css";
 
 const Skills = () => {
-    const { createElement } = React;
     const skills = [
         { name: "Python", icon: python },
         { name: "React", icon: react },

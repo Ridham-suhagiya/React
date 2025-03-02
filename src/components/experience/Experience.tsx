@@ -1,9 +1,8 @@
-import React from "src/react";
+import { createElement, useState } from "src/react";
 import "./experience.css";
 import { isArray } from "lodash";
 
 const Experience = () => {
-    const { createElement, useState } = React;
     const ShowExperience = (props: any) => {
         const { children } = props;
         const [toggleExperience, setToggleExperience] = useState(false);

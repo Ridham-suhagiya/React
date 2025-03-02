@@ -1,7 +1,8 @@
-import React from "../../react";
+import { createElement } from "../../react";
 import "./header.module.scss";
+
 const Header = () => {
-    const { createElement } = React;
+    // const { createElement } = React;
     return createElement(
         "header",
         { id: "header", className: "header slider-item" },

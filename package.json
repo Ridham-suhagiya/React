@@ -1,11 +1,23 @@
 {
+  "name": "@ridhamsuhagiya/my-react-library",
+  "version": "1.0.0",
+  "description": "A lightweight React-like library for building UIs.",
   "dependencies": {
     "@types/lodash": "^4.17.14",
     "lodash": "^4.17.21"
   },
+  "author": "Ridham Suhagiya ",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "ui",
+    "virtual-dom",
+    "frontend"
+  ],
   "scripts": {
     "start": "npx parcel index.html",
-    "build": "npx parcel build index.html"
+    "build": "npx parcel build index.html",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@parcel/optimizer-svgo": "^2.13",

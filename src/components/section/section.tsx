@@ -1,4 +1,4 @@
-import React from "src/react";
+import { createElement } from "src/react";
 import redStar from "../../images/red-star.png";
 import blueStar from "../../images/blue-star.png";
 import RedBlueStars from "../red-blue-stars/red-blue-stars";
@@ -13,7 +13,6 @@ const SectionWithImage = ({
     addImage,
     isMobileView,
 }: any) => {
-    const { createElement } = React;
     const isEven = index % 2 === 0;
 
     const numberOfStars = 25 * Math.random();

@@ -1,8 +1,7 @@
-import React from "src/react";
+import { createElement } from "src/react";
 import "./about.module.scss";
 
 const About = () => {
-    const { createElement } = React;
     return createElement(
         "section",
         { id: "about", className: "about slider-item" },
