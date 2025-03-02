@@ -21,6 +21,9 @@
     animation: float 3s ease-in-out infinite;
     cursor: pointer;
     position: relative;
+    img {
+        margin: 0;
+    }
 }
 
 .skill-chip.no-float {
