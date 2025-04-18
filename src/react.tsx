@@ -20,6 +20,7 @@ const React = (() => {
 
     const createElement = (tag: HTML_TAGS, props: any, ...children: any) => {
         return {
+            // virtual dom
             tag,
             props: {
                 ...props,
@@ -123,7 +124,7 @@ const React = (() => {
         } else if ((isString(newVd) || isNumber(newVd)) && newVd !== oldVd) {
             root.innerHTML = `${newVd}`;
         } else {
-            const currentElement = root.children[index] as HTMLElement;
+            const currentElement = root.childNodes[index] as HTMLElement;
             if (!currentElement) return;
 
             if (!isEqual(oldVdProps, newVdProps)) setAttributes(currentElement as HTMLElement, newVdProps);
