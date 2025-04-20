@@ -122,7 +122,7 @@ const React = (() => {
         } else if (newVd && oldVd && (typeof newVd !== typeof oldVd || newVd.tag !== oldVd.tag)) {
             root.children[index].replaceWith(render(newVd));
         } else if ((isString(newVd) || isNumber(newVd)) && newVd !== oldVd) {
-            root.innerHTML = `${newVd}`;
+            root.replaceChild(document.createTextNode(`${newVd}`), root.childNodes[index]);
         } else {
             const currentElement = root.childNodes[index] as HTMLElement;
             if (!currentElement) return;

@@ -1,25 +1,25 @@
 {
-  "name": "@ridhamsuhagiya/my-react-library",
-  "version": "1.0.7",
-  "description": "A lightweight React-like library for building UIs.",
-  "dependencies": {
-    "@types/lodash": "^4.17.14",
-    "lodash": "^4.17.21"
-  },
-  "main": "src/react.tsx",
-  "author": "Ridham Suhagiya ",
-  "license": "MIT",
-  "keywords": [
-    "react",
-    "ui",
-    "virtual-dom",
-    "frontend"
-  ],
-  "scripts": {
-    "build": "tsc"
-  },
-  "devDependencies": {
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
-  }
+    "name": "@ridhamsuhagiya/my-react-library",
+    "version": "1.0.9",
+    "description": "A lightweight React-like library for building UIs.",
+    "dependencies": {
+        "@types/lodash": "^4.17.14",
+        "lodash": "^4.17.21"
+    },
+    "main": "src/react.tsx",
+    "author": "Ridham Suhagiya ",
+    "license": "MIT",
+    "keywords": [
+        "react",
+        "ui",
+        "virtual-dom",
+        "frontend"
+    ],
+    "scripts": {
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "^5.7.3"
+    }
 }
